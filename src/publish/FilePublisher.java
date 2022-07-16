@@ -4,10 +4,18 @@ import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.LinkedList;
 
-public class Publish {
-    public String createFile(String fileName) {
+/**
+ *
+ */
+public class FilePublisher implements Publisher{
+    String fileName;
+    public FilePublisher(String fileName){
+        this.fileName = fileName;
+    }
+
+    @Override
+    public void createInstance() {
         try {
             File file = new File(fileName);
             if (file.createNewFile()) {
@@ -19,11 +27,9 @@ public class Publish {
             System.out.println("An error occurred.");
             e.printStackTrace();
         }
-
-        return fileName;
     }
-
-    public void publish(String fileName) throws IOException {
+    @Override
+    public void publish() throws IOException {
         try {
 
             FileInputStream inputStream = new FileInputStream(fileName);
@@ -42,10 +48,12 @@ public class Publish {
             FileOutputStream outputStream = new FileOutputStream(fileName);
             ObjectOutputStream oos = new ObjectOutputStream(outputStream);
             ArrayList<Data> arr = new ArrayList<>();
-            Data data = new Data(getTime());
-            arr.add(data);
+            for (int i = 0; i < 3 ; i++) {
+                Data data = new Data(getTime());
+                arr.add(data);
+            }
             oos.writeObject(arr);
-//                oos.flush();
+//            oos.flush();
             oos.close();
         } catch (IOException ex) {
             ex.printStackTrace();

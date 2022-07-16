@@ -4,10 +4,10 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
-        Publish publish = new Publish();
-        String name = publish.createFile("sTime.ser");
+        FilePublisher publish = new FilePublisher("sTime.ser");
+        publish.createInstance();
         try {
-            publish.publish(name);
+            publish.publish();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
