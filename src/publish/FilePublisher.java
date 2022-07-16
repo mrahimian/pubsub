@@ -52,8 +52,10 @@ public class FilePublisher implements Publisher{
             Object obj = ois.readObject();
             ArrayList<Data> arr = (ArrayList<Data>) obj;
             ois.close();
-            Data data = new Data(getTime());
-            arr.add(data);
+            for (int i = 0; i < 3 ; i++) {
+                Data data = new Data(getTime());
+                arr.add(data);
+            }
             FileOutputStream outputStream = new FileOutputStream(fileName);
             ObjectOutputStream oos = new ObjectOutputStream(outputStream);
             oos.writeObject(arr);
