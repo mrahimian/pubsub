@@ -5,9 +5,13 @@ import publish.Data;
 import java.io.*;
 import java.util.ArrayList;
 
-public class FileSubscriber {
+public class FileSubscriber implements Subscriber{
 
-    public void subscribe(String fileName){
+    String fileName;
+    public FileSubscriber(String fileName){
+        this.fileName = fileName;
+    }
+    public void subscribe(){
         try (
                 FileInputStream inputStream = new FileInputStream(fileName);
                 ObjectInputStream ois = new ObjectInputStream(inputStream)
