@@ -5,7 +5,7 @@ import publish.Data;
 import java.io.*;
 import java.util.ArrayList;
 
-public class Subscribe {
+public class FileSubscriber {
 
     public void subscribe(String fileName){
         try (

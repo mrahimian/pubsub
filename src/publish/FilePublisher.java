@@ -6,14 +6,23 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 /**
- *
+ * It's a Publisher that publishes data to File
  */
 public class FilePublisher implements Publisher{
+    /** Name of file to be written into */
     String fileName;
+
+    /**
+     * Set the fileName
+     * @param fileName
+     */
     public FilePublisher(String fileName){
         this.fileName = fileName;
     }
 
+    /**
+     * Create the file or do nothing if file exists
+     */
     @Override
     public void createInstance() {
         try {
@@ -28,6 +37,11 @@ public class FilePublisher implements Publisher{
             e.printStackTrace();
         }
     }
+
+    /**
+     * Get current time and write it three times in the file
+     * @throws IOException
+     */
     @Override
     public void publish() throws IOException {
         try {
@@ -62,6 +76,11 @@ public class FilePublisher implements Publisher{
         }
     }
 
+    /**
+     * Get current time in below format :
+     * yyyy/MM/dd HH:mm:ss
+     * @return time in above format as String
+     */
     public String getTime() {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
