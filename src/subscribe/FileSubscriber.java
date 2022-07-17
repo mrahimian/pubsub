@@ -11,24 +11,28 @@ public class FileSubscriber implements Subscriber{
     public FileSubscriber(String fileName){
         this.fileName = fileName;
     }
-    public void subscribe(){
+    public ArrayList<Data> subscribe(){
+        ArrayList<Data> arr = null;
         try (
                 FileInputStream inputStream = new FileInputStream(fileName);
                 ObjectInputStream ois = new ObjectInputStream(inputStream)
         ) {
-
             Object obj = ois.readObject();
-            ArrayList<Data> arr = (ArrayList<Data>)obj;
-//            Data data = (Data) obj;
-//            System.out.println(data.getMessage());
-            for(Data data : arr){
-                System.out.println(data.getMessage());
-            }
+            arr = (ArrayList<Data>) obj;
 
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+//            for (int i = 0; i < arr.size() ; i++) {
+//                System.out.println(arr.get(i).getMessage());
+//            }
+
+//                for (Data data : arr) {
+//                    System.out.println(data.getMessage());
+//                }
+
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        return arr;
     }
 }

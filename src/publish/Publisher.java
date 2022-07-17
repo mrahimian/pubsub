@@ -7,15 +7,11 @@ import java.io.IOException;
  */
 public interface Publisher {
 
-    /**
-     * create instance of IO resource (File, Connection ...)
-     */
-    void createInstance();
 
     /**
      * it writes the data on external resource
      * @throws IOException
      */
-    void publish() throws IOException;
+    void publish(String message) throws IOException;
 
 }

@@ -4,12 +4,24 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
-        FilePublisher publish = new FilePublisher("sTime.ser");
-        publish.createInstance();
+        Publisher publisher = new FilePublisher("sTime.bin");
         try {
-            publish.publish();
+            while (true){
+                long beforePublish = System.currentTimeMillis();
+//                publisher.publish( FilePublisher.getTime() );
+//                publisher.publish( FilePublisher.getTime() );
+//                publisher.publish( FilePublisher.getTime() );
+                for (int i = 0; i < 100; i++) {
+                    publisher.publish( FilePublisher.getTime() );
+                }
+                long afterPublish = System.currentTimeMillis();
+                Thread.sleep(1000);
+                System.out.println(afterPublish - beforePublish);
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } catch (Exception e){
+
         }
     }
 
