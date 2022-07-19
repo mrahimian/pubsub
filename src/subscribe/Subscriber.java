@@ -1,16 +1,24 @@
 package subscribe;
 
+import mm.XMsg;
 import publish.Data;
 
 import java.util.ArrayList;
+import java.util.function.Consumer;
 
 /**
- * A Subscriber subscribes data on external resource such as File, Database, Network ...
+ * A mm.Subscriber subscribes data on external resource such as File, Database, Network ...
  */
 public interface Subscriber {
 
     /**
-     * Read data
+     * pass anny message to consumer method
      */
-    ArrayList<Data> subscribe();
+    void subscribe(Consumer<Data> consumer);
+
+    /**
+     * read a message in blocking matter
+     */
+    Data subscribe();
+
 }

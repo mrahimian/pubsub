@@ -8,15 +8,15 @@ public class Main {
         try {
             while (true){
                 long beforePublish = System.currentTimeMillis();
-//                publisher.publish( FilePublisher.getTime() );
-//                publisher.publish( FilePublisher.getTime() );
-//                publisher.publish( FilePublisher.getTime() );
-                for (int i = 0; i < 100; i++) {
-                    publisher.publish( FilePublisher.getTime() );
-                }
+                publisher.publish( FilePublisher.getTime() );
+                publisher.publish( FilePublisher.getTime() );
+                publisher.publish( FilePublisher.getTime() );
+//                for (int i = 0; i < 100; i++) {
+//                    publisher.publish( FilePublisher.getTime() );
+//                }
                 long afterPublish = System.currentTimeMillis();
                 Thread.sleep(1000);
-                System.out.println(afterPublish - beforePublish);
+//                System.out.println(afterPublish - beforePublish);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
