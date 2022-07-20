@@ -1,5 +1,7 @@
 package publish;
 
+import org.json.JSONObject;
+
 import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -10,7 +12,6 @@ import java.util.List;
  * It's a Publisher that publishes data to File
  */
 public class FilePublisher implements Publisher {
-    private final static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss.SSS");
 
     /**
      * Name of the file to be written into
@@ -53,26 +54,29 @@ public class FilePublisher implements Publisher {
     public void publish(String message) throws IOException {
         ArrayList<Data> arr;
         try {
-            try (FileInputStream inputStream = new FileInputStream(fileName);
-                 ObjectInputStream ois = new ObjectInputStream(inputStream)) {
-                Object obj = ois.readObject();
-                arr = (ArrayList<Data>) obj;
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-            try (FileOutputStream outputStream = new FileOutputStream(fileName);
+//            try (FileInputStream inputStream = new FileInputStream(fileName);
+//                 ObjectInputStream ois = new ObjectInputStream(inputStream)) {
+//                Object obj = ois.readObject();
+//                arr = (ArrayList<Data>) obj;
+//            } catch (ClassNotFoundException e) {
+//                throw new RuntimeException(e);
+//            }
+            try (FileOutputStream outputStream = new FileOutputStream(fileName,true);
                  ObjectOutputStream oos = new ObjectOutputStream(outputStream)) {
 
                 Data data = new Data(message);
-                arr.add(data);
-                oos.writeObject(arr);
+//                arr.add(data);
+                oos.writeObject(data);
+                System.out.println(data.getMessage());
+                new JSONObject()
 
             }
         }catch (EOFException e){
             try(FileOutputStream outputStream = new FileOutputStream(fileName);
                 ObjectOutputStream oos = new ObjectOutputStream(outputStream)){
                 arr = new ArrayList<>();
-                fillArray(message,arr);
+                Data data = new Data(message);
+                arr.add(data);
                 oos.writeObject(arr);
                 oos.flush();
             }
@@ -80,21 +84,5 @@ public class FilePublisher implements Publisher {
 
     }
 
-    /**
-     * Get current time in below format :
-     * yyyy/MM/dd HH:mm:ss.SSS
-     *
-     * @return time in above format as String
-     */
-    public static String getTime() {
-        LocalDateTime now = LocalDateTime.now();
-        return dtf.format(now);
-    }
 
-    private void fillArray(String message, ArrayList<Data> arr){
-        for (int i = 0; i < 3; i++) {
-            Data data = new Data(message);
-            arr.add(data);
-        }
-    }
 }

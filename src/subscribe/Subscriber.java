@@ -12,7 +12,7 @@ import java.util.function.Consumer;
 public interface Subscriber {
 
     /**
-     * pass anny message to consumer method
+     * pass anny message to consumer method in an async manner
      */
     void subscribe(Consumer<Data> consumer);
 
