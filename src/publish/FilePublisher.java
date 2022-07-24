@@ -1,12 +1,9 @@
 package publish;
 
-import org.json.JSONObject;
+import data.Data;
 
 import java.io.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * It's a Publisher that publishes data to File
@@ -46,42 +43,39 @@ public class FilePublisher implements Publisher {
 
 
     /**
-     * Get current time and write it three times in the file
+     * Get message and write it in the file
      *
      * @throws IOException
      */
     @Override
     public void publish(String message) throws IOException {
-        ArrayList<Data> arr;
-        try {
-//            try (FileInputStream inputStream = new FileInputStream(fileName);
-//                 ObjectInputStream ois = new ObjectInputStream(inputStream)) {
-//                Object obj = ois.readObject();
-//                arr = (ArrayList<Data>) obj;
-//            } catch (ClassNotFoundException e) {
-//                throw new RuntimeException(e);
-//            }
-            try (FileOutputStream outputStream = new FileOutputStream(fileName,true);
-                 ObjectOutputStream oos = new ObjectOutputStream(outputStream)) {
 
-                Data data = new Data(message);
-//                arr.add(data);
-                oos.writeObject(data);
-                System.out.println(data.getMessage());
-                new JSONObject()
+        try (FileOutputStream fos = new FileOutputStream(fileName,true)) {
 
-            }
-        }catch (EOFException e){
-            try(FileOutputStream outputStream = new FileOutputStream(fileName);
-                ObjectOutputStream oos = new ObjectOutputStream(outputStream)){
-                arr = new ArrayList<>();
-                Data data = new Data(message);
-                arr.add(data);
-                oos.writeObject(arr);
-                oos.flush();
-            }
+            fos.write(msgToByteArray(message));
+        }
+    }
+
+
+    private byte[] msgToByteArray(String message){
+        String formattedMsg = formatMsg(message);
+        int msgLength = formattedMsg.length();
+
+        int id = 0;
+        byte[] msgBytes = new byte[msgLength+10];
+        // write size of message in first ten byte of msgBytes array
+        while (msgLength > 0) {
+            msgBytes[id++] = (byte) (msgLength % 2);
+            msgLength = msgLength / 2;
         }
 
+        System.arraycopy(formattedMsg.getBytes(), 0, msgBytes, 10, msgBytes.length - 10);
+
+        return msgBytes;
+    }
+
+    private String formatMsg(String message){
+        return "{\n\tmessage:\"" + message + "\"\n}";
     }
 
 

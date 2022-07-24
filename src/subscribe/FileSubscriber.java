@@ -1,15 +1,13 @@
 package subscribe;
 
-import publish.Data;
+import data.Data;
 
 import java.io.*;
-import java.time.Instant;
-import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
-public class FileSubscriber implements Subscriber, Serializable {
+public class FileSubscriber implements  Serializable {
     transient private final ExecutorService es = Executors.newSingleThreadExecutor();
     private final String fileName;
 
@@ -42,7 +40,7 @@ public class FileSubscriber implements Subscriber, Serializable {
         }
     }
 
-    @Override
+
     public void subscribe(Consumer<Data> consumer) {
         es.submit(() -> {
             try {
@@ -104,7 +102,7 @@ public class FileSubscriber implements Subscriber, Serializable {
         }
     }
 
-    @Override
+
     public Data subscribe() {
         try (
                 FileInputStream inputStream = new FileInputStream(fileName);
