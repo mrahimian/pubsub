@@ -1,9 +1,9 @@
-package subscribe;
+package publish;
 
 public interface CommunicationProtocol {
     /**
      * Get data from the resource and deliver to decoder
      * @return
      */
-    String readData();
+    void writeData(String msg);
 }

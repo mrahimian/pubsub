@@ -1,5 +1,7 @@
 package publish;
 
+import data.Data;
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.time.LocalDateTime;
@@ -11,8 +13,12 @@ public class Main {
 
 
     public static void main(String[] args) {
-        Publisher publisher = new FilePublisher("sTime.bin");
+        CommunicationProtocol cp = new FileProtocol("sTime.bin");
+        Encoder encoder = new JsonEncoder();
+        Publisher publisher = new Publisher(cp,encoder);
         try {
+            publisher.publish( new Data(getTime()) );
+            publisher.publish( new Data(getTime()) );
 //            while (true){
 //                long beforePublish = System.currentTimeMillis();
 //                publisher.publish( getTime() );
@@ -25,7 +31,6 @@ public class Main {
 //                Thread.sleep(300);
 ////                System.out.println(afterPublish - beforePublish);
 //            }
-            publisher.publish( getTime() );
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

@@ -1,17 +1,33 @@
 package publish;
 
-import java.io.IOException;
+import data.Data;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Publisher exists to publish(write) data on an external resource such as File, Database, Network ...
  */
-public interface Publisher {
+public class Publisher {
+    private final ExecutorService es = Executors.newSingleThreadExecutor();
+    private final CommunicationProtocol cp;
+    private final Encoder encoder;
 
+    public Publisher(CommunicationProtocol cp, Encoder encoder) {
+        this.cp = cp;
+        this.encoder = encoder;
+    }
 
     /**
      * it writes the data on external resource
-     * @throws IOException
      */
-    void publish(String message) throws IOException;
+    void publish(Data data) {
+        try {
+            String msg = encoder.encode(data);
+            cp.writeData(msg);
+        }catch (Exception e){
+
+        }
+    };
 
 }

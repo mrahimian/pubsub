@@ -46,7 +46,7 @@ public class FileSubscriber implements  Serializable {
             try {
                 _process(consumer);
             } catch (Exception e) {
-                // TODO @MR addd catch statement
+                // TODO @MR add catch statement
                 e.printStackTrace();
             }
         });

@@ -9,11 +9,14 @@ import java.util.Arrays;
 
 public class FileProtocol implements CommunicationProtocol{
 
-    private final String fileName;
+    private FileInputStream fis;
 
     public FileProtocol(String fileName){
-        this.fileName = fileName;
+        try {
+            fis = new FileInputStream(fileName);
+        }catch (Exception e){
 
+        }
     }
 
     /**
@@ -21,17 +24,27 @@ public class FileProtocol implements CommunicationProtocol{
      * @return message
      */
     @Override
-    public String getData() {
+    public String readData() {
         String message = null;
-        try(FileInputStream fis = new FileInputStream(fileName)){
-            //10 first bytes are the size of the message
-            byte[] lenBytes = fis.readNBytes(10);
-            int msgLength = getMessageLength(lenBytes);
+//        try(FileInputStream fis = new FileInputStream(fileName)){
+        try {
+
+            //first byte is the protocol version
+            int version = fis.readNBytes(1)[0];
+
+            //second byte is the number of next bytes that shows message length
+            int lenBytesNumber = fis.readNBytes(1)[0];
+
+            int msgLength = getMessageLength(fis.readNBytes(lenBytesNumber),lenBytesNumber);
+
+            if (msgLength == 0) return null;
 
             byte[] msgBytes  = fis.readNBytes(msgLength);
             message = new String(msgBytes);
 
-        }catch (IOException e ){
+        }catch (IOException | NullPointerException e ){
+            e.printStackTrace();
+        }catch (ArrayIndexOutOfBoundsException ae){
 
         }
         return message;
@@ -42,11 +55,11 @@ public class FileProtocol implements CommunicationProtocol{
      * @param bytes array of bytes
      * @return decimal
      */
-    private int getMessageLength(byte[] bytes){
+    private int getMessageLength(byte[] bytes, int lenBytesNumber){
         int length = 0;
-        for (int i = 0; i < bytes.length ; i++) {
-            length += bytes[i] * Math.pow(2,i);
-        }
+        length = (lenBytesNumber - 1) * 256 + bytes[lenBytesNumber-1] + 128;
+
+
         return length;
     }
 }
