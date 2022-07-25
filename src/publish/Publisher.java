@@ -9,7 +9,6 @@ import java.util.concurrent.Executors;
  * Publisher exists to publish(write) data on an external resource such as File, Database, Network ...
  */
 public class Publisher {
-    private final ExecutorService es = Executors.newSingleThreadExecutor();
     private final CommunicationProtocol cp;
     private final Encoder encoder;
 
@@ -25,6 +24,7 @@ public class Publisher {
         try {
             String msg = encoder.encode(data);
             cp.writeData(msg);
+            System.out.println(msg);
         }catch (Exception e){
 
         }

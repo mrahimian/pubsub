@@ -17,7 +17,7 @@ public class Main {
         Encoder encoder = new JsonEncoder();
         Publisher publisher = new Publisher(cp,encoder);
         try {
-            publisher.publish( new Data(getTime()) );
+//            publisher.publish( new Data(getTime()) );
             publisher.publish( new Data(getTime()) );
 //            while (true){
 //                long beforePublish = System.currentTimeMillis();

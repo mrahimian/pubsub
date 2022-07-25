@@ -2,14 +2,13 @@ package subscribe;
 
 import com.google.gson.Gson;
 import data.Data;
+import org.json.JSONObject;
 
 public class JsonDecoder implements Decoder{
+
     @Override
     public Data decode(String data) {
-
-        Gson gson = new Gson();
-
-        return gson.fromJson(data, Data.class);
-
+        JSONObject json = new JSONObject(data);
+        return new Data((String)(json.get("message")));
     }
 }
