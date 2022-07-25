@@ -12,12 +12,12 @@ public class Main {
 //        System.out.println(subscriber.subscribe().toString());
 //        System.out.println(subscriber.subscribe().toString());
 //        System.out.println(subscriber.subscribe().toString());
+        System.out.println(subscriber.subscribe().toString());
 //        System.out.println(subscriber.subscribe().toString());
 //        System.out.println(subscriber.subscribe().toString());
-//        System.out.println(subscriber.subscribe().toString());
-        System.out.println(subscriber.subscribe(6000).toString());
+//        System.out.println(subscriber.subscribe(6000).toString());
 
-        subscriber.subscribe(msg -> System.out.println(msg));
+//        subscriber.subscribe(msg -> System.out.println(msg));
 //        System.out.println(fp.getData());
 //        System.out.println(new JsonDecoder().decode(fp.getData()));
 

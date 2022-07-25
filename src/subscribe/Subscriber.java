@@ -2,6 +2,7 @@ package subscribe;
 
 import data.Data;
 
+import java.util.Optional;
 import java.util.concurrent.*;
 import java.util.function.Consumer;
 
@@ -46,33 +47,6 @@ public class Subscriber {
      * read a message in blocking matter
      */
     Data subscribe(){
-        return _process();
-    }
-
-    /**
-     * read a message in a blocking matter with respect to the given timeout
-     * @param timeout in milliseconds
-     * @return
-     */
-    Data subscribe(int timeout){
-        final Future<Data> future = es.submit(()-> _process());
-        Data data = null;
-        try {
-            data = future.get(timeout,TimeUnit.MILLISECONDS);
-            es.shutdown();
-
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
-        } catch (TimeoutException e) {
-            System.out.println("timeout");
-        }
-
-        return data;
-    }
-
-    Data _process(){
         String msg = cp.readData();
 
         if(msg != null){
@@ -82,5 +56,31 @@ public class Subscriber {
             msg = cp.readData();
         }
         return decoder.decode(msg);
+    }
+
+    /**
+     * read a message in a blocking matter with respect to the given timeout
+     * @param timeout in milliseconds
+     * @return
+     */
+    Optional<Data> subscribe(int timeout){
+        final Future<Data> future = es.submit(()-> subscribe());
+        Data data = null;
+        try {
+            data = future.get(timeout,TimeUnit.MILLISECONDS);
+            return Optional.of(data);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        } catch (TimeoutException e) {
+            System.out.println("timeout");
+        }
+
+        return Optional.empty();
+    }
+
+    void shutDown(){
+        es.shutdown();
     }
 }
