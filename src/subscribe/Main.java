@@ -1,5 +1,7 @@
 package subscribe;
 
+import java.util.concurrent.Executors;
+
 public class Main {
     public static void main(String[] args) {
 //        Subscriber subscriber = new FileSubscriber("sTime.bin", "subscriber1");
@@ -7,7 +9,9 @@ public class Main {
         CommunicationProtocol fp = new FileProtocol("sTime.bin", "cp1");
         Decoder decoder = new JsonDecoder();
 
-        Subscriber subscriber = new Subscriber(fp,decoder);
+        var es = Executors.newFixedThreadPool(1);
+
+        Subscriber subscriber = new Subscriber(fp,decoder, es);
 //        System.out.println(subscriber.subscribe().toString());
 //        System.out.println(subscriber.subscribe().toString());
 //        System.out.println(subscriber.subscribe().toString());
