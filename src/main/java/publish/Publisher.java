@@ -2,9 +2,6 @@ package publish;
 
 import data.Data;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 /**
  * Publisher exists to publish(write) data on an external resource such as File, Database, Network ...
  */
@@ -24,7 +21,6 @@ public class Publisher {
         try {
             String msg = encoder.encode(data);
             cp.writeData(msg);
-            System.out.println(msg);
         }catch (Exception e){
 
         }

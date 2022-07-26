@@ -21,6 +21,7 @@ public class FileProtocol implements CommunicationProtocol {
             if (file.createNewFile()) {
                 System.out.println("File created: " + file.getName());
                 filePointer = 0;
+                new DataOutputStream(new FileOutputStream(this.cpName)).writeInt(filePointer);
             } else {
                 System.out.println("File already exists.");
                 filePointer = new DataInputStream(new FileInputStream(this.cpName)).readInt();

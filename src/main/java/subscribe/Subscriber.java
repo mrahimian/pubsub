@@ -17,7 +17,7 @@ public class Subscriber {
     private final Decoder decoder;
 
 
-    public Subscriber(CommunicationProtocol cp, Decoder decoder, ExecutorService es) {
+    public Subscriber(subscribe.CommunicationProtocol cp, Decoder decoder, ExecutorService es) {
         this.cp = cp;
         this.decoder = decoder;
         this.es = es;
@@ -26,7 +26,7 @@ public class Subscriber {
     /**
      * read a message in blocking matter
      */
-    private Data _subscribe() {
+    private Optional<Data> _subscribe() {
         String msg = cp.readData();
 
         if (msg != null) {
@@ -47,10 +47,10 @@ public class Subscriber {
      * @return
      */
     public Optional<Data> subscribe(int timeout) {
-        final Future<Data> future = es.submit(() -> subscribe());
+        final Future<Optional<Data>> future = es.submit(() -> _subscribe());
         try {
             var data = timeout > 0 ? future.get(timeout, TimeUnit.MILLISECONDS) : future.get();
-            return Optional.of(data);
+            return data;
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
         } catch (TimeoutException e) {
