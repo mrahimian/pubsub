@@ -86,7 +86,7 @@ public class Subscriber {
                         }
                     }
                 } catch (Exception e) {
-                    logger.warning("Error while subscribing data in async manner");
+                    logger.warning("Error while subscribing data in async manner :\n" + e.getMessage());
                 }
             });
         } catch (RejectedExecutionException re) {
