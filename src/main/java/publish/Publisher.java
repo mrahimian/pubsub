@@ -19,7 +19,7 @@ public class Publisher {
         this.cp = cp;
         this.encoder = encoder;
 
-        logger = SysLogger.getInstance(Publisher.class.getName()).getLogger();
+        logger = new SysLogger(Publisher.class.getName()).getLogger();
     }
 
     /**

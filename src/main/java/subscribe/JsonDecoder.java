@@ -15,7 +15,7 @@ public class JsonDecoder implements Decoder{
     private final Logger logger ;
 
     public JsonDecoder() throws IOException {
-        logger = SysLogger.getInstance(Publisher.class.getName()).getLogger();
+        logger = new SysLogger(Publisher.class.getName()).getLogger();
     }
 
     @Override

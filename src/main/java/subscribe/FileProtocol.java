@@ -14,7 +14,7 @@ public class FileProtocol implements CommunicationProtocol {
     private int filePointer;
 
     public FileProtocol(String fileName, String cpName) throws IOException {
-        logger = SysLogger.getInstance(Publisher.class.getName()).getLogger();
+        logger = new SysLogger(Publisher.class.getName()).getLogger();
         this.cpName = cpName;
 
         File file = new File(fileName);

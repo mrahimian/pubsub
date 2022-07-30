@@ -18,7 +18,7 @@ public class FileProtocol implements CommunicationProtocol{
      * @param fileName
      */
     public FileProtocol(String fileName) throws IOException {
-        logger = SysLogger.getInstance(Publisher.class.getName()).getLogger();
+        logger = new SysLogger(Publisher.class.getName()).getLogger();
 
         try {
             File file = new File(fileName);

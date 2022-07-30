@@ -27,7 +27,7 @@ public class Subscriber {
         this.cp = cp;
         this.decoder = decoder;
         this.es = es;
-        logger = SysLogger.getInstance(Publisher.class.getName()).getLogger();
+        logger = new SysLogger(Publisher.class.getName()).getLogger();
     }
 
 
