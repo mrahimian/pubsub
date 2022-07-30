@@ -1,10 +1,14 @@
 package subscribe;
 
 import data.Data;
+import log.SysLogger;
+import publish.Publisher;
 
+import java.io.IOException;
 import java.util.Optional;
 import java.util.concurrent.*;
 import java.util.function.Consumer;
+import java.util.logging.Logger;
 
 /**
  * A mm.Subscriber subscribes data on external resource such as File, Database, Network ...
@@ -16,12 +20,16 @@ public class Subscriber {
     private final CommunicationProtocol cp;
     private final Decoder decoder;
 
+    private final Logger logger;
 
-    public Subscriber(subscribe.CommunicationProtocol cp, Decoder decoder, ExecutorService es) {
+
+    public Subscriber(subscribe.CommunicationProtocol cp, Decoder decoder, ExecutorService es) throws IOException {
         this.cp = cp;
         this.decoder = decoder;
         this.es = es;
+        logger = SysLogger.getInstance(Publisher.class.getName()).getLogger();
     }
+
 
     /**
      * read a message in blocking matter
@@ -51,10 +59,8 @@ public class Subscriber {
         try {
             var data = timeout > 0 ? future.get(timeout, TimeUnit.MILLISECONDS) : future.get();
             return data;
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
-        } catch (TimeoutException e) {
-            System.out.println("timeout");
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            logger.warning(e.getMessage());
         }
 
         return Optional.empty();
@@ -68,20 +74,29 @@ public class Subscriber {
      * pass any message to consumer method in an async manner
      */
     public void subscribe(Consumer<Data> consumer) {
-        specialOne.submit(() -> {
-            try {
-                while (true) {
-                    var msg = subscribe(1000);
-                    if (msg.isPresent()) {
-                        consumer.accept(msg.get());
+        try {
+            specialOne.submit(() -> {
+                try {
+                    while (true) {
+                        var msg = _subscribe();
+                        if (msg.isPresent()) {
+                            consumer.accept(msg.get());
+                        } else {
+                            Thread.sleep(1000);
+                        }
                     }
+                } catch (Exception e) {
+                    logger.warning("Error while subscribing data in async manner");
                 }
-            } catch (Exception e) {
-                // todo
-            }
-        });
+            });
+        } catch (RejectedExecutionException re) {
+            logger.warning("call subscribe after shutdown");
+        }
     }
 
+    /**
+     * Subscribing after shutting down is no longer possible
+     */
     public void shutDown() {
         es.shutdown();
         specialOne.shutdown();

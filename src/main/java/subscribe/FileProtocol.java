@@ -1,35 +1,41 @@
 package subscribe;
 
+import log.SysLogger;
+import publish.Publisher;
+
 import java.io.*;
+import java.util.logging.Logger;
 
 public class FileProtocol implements CommunicationProtocol {
 
     private FileInputStream fis;
+    private final Logger logger;
     private final String cpName;
     private int filePointer;
 
-    public FileProtocol(String fileName, String cpName) {
+    public FileProtocol(String fileName, String cpName) throws IOException {
+        logger = SysLogger.getInstance(Publisher.class.getName()).getLogger();
         this.cpName = cpName;
-        try {
-            fis = new FileInputStream(fileName);
-        } catch (Exception e) {
 
+        File file = new File(fileName);
+        if(!file.exists()){
+            throw new FileNotFoundException("File " + fileName + " not found");
         }
+        fis = new FileInputStream(fileName);
 
         try {
-            File file = new File(this.cpName);
+            File storeFile = new File(this.cpName);
             if (file.createNewFile()) {
-                System.out.println("File created: " + file.getName());
+                logger.info("Store file created: " + storeFile.getName());
                 filePointer = 0;
                 new DataOutputStream(new FileOutputStream(this.cpName)).writeInt(filePointer);
             } else {
-                System.out.println("File already exists.");
+                logger.info("Store file already exists.");
                 filePointer = new DataInputStream(new FileInputStream(this.cpName)).readInt();
                 fis.readNBytes(filePointer);
             }
         } catch (Exception e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
+            logger.warning("Error while opening or reading store file " + cpName);
         }
     }
 
@@ -39,7 +45,7 @@ public class FileProtocol implements CommunicationProtocol {
      * @return message
      */
     @Override
-    public String readData() {
+    synchronized public String readData() {
         String message = null;
         try {
             //first byte is the protocol version
@@ -62,10 +68,8 @@ public class FileProtocol implements CommunicationProtocol {
 
             filePointer += 1 + 1 + lenBytesNumber + msgLength;
             new DataOutputStream(new FileOutputStream(this.cpName)).writeInt(filePointer);
-        } catch (IOException | NullPointerException e) {
-            e.printStackTrace();
-        } catch (ArrayIndexOutOfBoundsException ae) {
-
+        } catch (Exception e) {
+            logger.warning("Error while reading data from file");
         }
         return message;
     }
