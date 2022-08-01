@@ -1,10 +1,9 @@
-package publish;
+package ir.jibit.dumb.publish;
 
-import data.Data;
-import log.SysLogger;
+import ir.jibit.dumb.data.Data;
+import ir.jibit.dumb.log.LoggerUtil;
 
 import java.io.IOException;
-import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 
 /**
@@ -12,14 +11,14 @@ import java.util.logging.Logger;
  */
 public class Publisher {
     private final Logger logger;
-    private final CommunicationProtocol cp;
+    private final PublisherCommunicationProtocol cp;
     private final Encoder encoder;
 
-    public Publisher(CommunicationProtocol cp, Encoder encoder) throws IOException {
+    public Publisher(PublisherCommunicationProtocol cp, Encoder encoder) throws IOException {
         this.cp = cp;
         this.encoder = encoder;
 
-        logger = new SysLogger(Publisher.class.getName()).getLogger();
+        logger = LoggerUtil.getLogger(Publisher.class.getName());
     }
 
     /**

@@ -1,4 +1,4 @@
-package data;
+package ir.jibit.dumb.data;
 
 import java.io.Serializable;
 import java.util.UUID;

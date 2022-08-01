@@ -1,8 +1,8 @@
-package subscribe;
+package ir.jibit.dumb.subscribe;
 
-import data.Data;
-import log.SysLogger;
-import publish.Publisher;
+import ir.jibit.dumb.data.Data;
+import ir.jibit.dumb.log.LoggerUtil;
+import ir.jibit.dumb.publish.Publisher;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -17,17 +17,17 @@ public class Subscriber {
 
     private final ExecutorService specialOne = Executors.newCachedThreadPool();
     private final ExecutorService es;
-    private final CommunicationProtocol cp;
+    private final SubscriberCommunicationProtocol cp;
     private final Decoder decoder;
 
     private final Logger logger;
 
 
-    public Subscriber(subscribe.CommunicationProtocol cp, Decoder decoder, ExecutorService es) throws IOException {
+    public Subscriber(SubscriberCommunicationProtocol cp, Decoder decoder, ExecutorService es) throws IOException {
         this.cp = cp;
         this.decoder = decoder;
         this.es = es;
-        logger = new SysLogger(Publisher.class.getName()).getLogger();
+        logger = LoggerUtil.getLogger(Publisher.class.getName());
     }
 
 
@@ -83,6 +83,7 @@ public class Subscriber {
                             consumer.accept(msg.get());
                         } else {
                             Thread.sleep(1000);
+
                         }
                     }
                 } catch (Exception e) {
@@ -98,7 +99,7 @@ public class Subscriber {
      * Subscribing after shutting down is no longer possible
      */
     public void shutDown() {
-        es.shutdown();
+        //es.shutdown();
         specialOne.shutdown();
     }
 }

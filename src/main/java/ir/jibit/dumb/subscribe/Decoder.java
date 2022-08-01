@@ -1,4 +1,4 @@
-package subscribe;
+package ir.jibit.dumb.subscribe;
 
 public interface Decoder {
     /**

@@ -4,21 +4,22 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>ir.jibit.prodcons</groupId>
-    <artifactId>firstProj</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <groupId>ir.jibit</groupId>
+    <artifactId>dumb</artifactId>
+    <version>0.0.0</version>
+
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <json.version>20220320</json.version>
+    </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <version>20220320</version>
+            <version>${json.version}</version>
         </dependency>
     </dependencies>
 
-    <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-    </properties>
-    
 </project>

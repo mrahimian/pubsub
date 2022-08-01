@@ -1,12 +1,12 @@
-package subscribe;
+package ir.jibit.dumb.subscribe;
 
-import log.SysLogger;
-import publish.Publisher;
+import ir.jibit.dumb.publish.Publisher;
+import ir.jibit.dumb.log.LoggerUtil;
 
 import java.io.*;
 import java.util.logging.Logger;
 
-public class FileProtocol implements CommunicationProtocol {
+public class FileProtocol implements SubscriberCommunicationProtocol {
 
     private FileInputStream fis;
     private final Logger logger;
@@ -14,7 +14,7 @@ public class FileProtocol implements CommunicationProtocol {
     private int filePointer;
 
     public FileProtocol(String fileName, String cpName) throws IOException {
-        logger = new SysLogger(Publisher.class.getName()).getLogger();
+        logger = LoggerUtil.getLogger(Publisher.class.getName());
         this.cpName = cpName;
 
         File file = new File(fileName);

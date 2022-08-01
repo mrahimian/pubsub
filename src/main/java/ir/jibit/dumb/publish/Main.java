@@ -1,6 +1,6 @@
-package publish;
+package ir.jibit.dumb.publish;
 
-import data.Data;
+import ir.jibit.dumb.data.Data;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -12,7 +12,7 @@ public class Main {
 
 
     public static void main(String[] args)   {
-        CommunicationProtocol cp ;
+        PublisherCommunicationProtocol cp ;
         Publisher publisher;
         try {
             cp = new FileProtocol("sTime.bin");

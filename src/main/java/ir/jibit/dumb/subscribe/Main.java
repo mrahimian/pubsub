@@ -1,4 +1,4 @@
-package subscribe;
+package ir.jibit.dumb.subscribe;
 
 import java.io.IOException;
 import java.util.concurrent.Executors;
@@ -7,7 +7,7 @@ public class Main {
     public static void main(String[] args) {
 //        Subscriber subscriber = new FileSubscriber("sTime.bin", "subscriber1");
 //        subscriber.subscribe(msg -> System.out.println(msg.getMessage()));
-        CommunicationProtocol fp ;
+        SubscriberCommunicationProtocol fp ;
         Decoder decoder;
         Subscriber subscriber;
         try {

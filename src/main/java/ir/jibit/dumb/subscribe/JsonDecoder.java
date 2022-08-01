@@ -1,10 +1,10 @@
-package subscribe;
+package ir.jibit.dumb.subscribe;
 
-import data.Data;
-import log.SysLogger;
+import ir.jibit.dumb.data.Data;
+import ir.jibit.dumb.publish.Publisher;
+import ir.jibit.dumb.log.LoggerUtil;
 import org.json.JSONObject;
 import org.json.JSONException;
-import publish.Publisher;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -15,7 +15,7 @@ public class JsonDecoder implements Decoder{
     private final Logger logger ;
 
     public JsonDecoder() throws IOException {
-        logger = new SysLogger(Publisher.class.getName()).getLogger();
+        logger = LoggerUtil.getLogger(Publisher.class.getName());
     }
 
     @Override

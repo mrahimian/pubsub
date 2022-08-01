@@ -1,13 +1,13 @@
-package publish;
+package ir.jibit.dumb.publish;
 
-import log.SysLogger;
+import ir.jibit.dumb.log.LoggerUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-public class FileProtocol implements CommunicationProtocol{
+public class FileProtocol implements PublisherCommunicationProtocol {
 
     private FileOutputStream fos;
     private final Logger logger;
@@ -18,7 +18,7 @@ public class FileProtocol implements CommunicationProtocol{
      * @param fileName
      */
     public FileProtocol(String fileName) throws IOException {
-        logger = new SysLogger(Publisher.class.getName()).getLogger();
+        logger = LoggerUtil.getLogger(Publisher.class.getName());
 
         try {
             File file = new File(fileName);
@@ -27,15 +27,17 @@ public class FileProtocol implements CommunicationProtocol{
             } else {
                 logger.info("File already exists.");
             }
-            fos = new FileOutputStream(fileName,true);
+            fos = new FileOutputStream(fileName, true);
+            //todo close fos
         } catch (Exception e) {
             logger.warning("Error while opening or creating file");
         }
 
     }
+
     @Override
     public synchronized void writeData(String msg) {
-        try{
+        try {
             fos.write(msgToByteArray(msg));
         } catch (IOException e) {
             logger.warning("Error while writing data in the file");
@@ -46,16 +48,17 @@ public class FileProtocol implements CommunicationProtocol{
      * This method convert String message to byte array
      * First byte is version number
      * Second byte is the number of next bytes that relates to message length
+     *
      * @param message
      * @return
      */
-    private byte[] msgToByteArray(String message){
-
+    private byte[] msgToByteArray(String message) {
+        //todo checksum
         byte[] msgBytes = null;
-        try{
+        try {
             int msgLength = message.length();
-            int fullByte = msgLength/256;
-            int rest = msgLength % 256 ;
+            int fullByte = msgLength / 256;
+            int rest = msgLength % 256;
             int lenBytesNumber = fullByte + 1;
             rest -= 128;
 
@@ -65,17 +68,17 @@ public class FileProtocol implements CommunicationProtocol{
             //first byte for version number
             msgBytes[0] = 2;
             //second byte for number of next byte that relates to message length
-            msgBytes[1] = (byte)(fullByte + 1);
+            msgBytes[1] = (byte) (fullByte + 1);
 
-            for (int i = 0; i < lenBytesNumber ; i++) {
-                if(i == lenBytesNumber-1){
-                    msgBytes[i+2] = (byte)rest;
-                }else {
-                    msgBytes[i+2] = 127;
+            for (int i = 0; i < lenBytesNumber; i++) {
+                if (i == lenBytesNumber - 1) {
+                    msgBytes[i + 2] = (byte) rest;
+                } else {
+                    msgBytes[i + 2] = 127;
                 }
             }
-            System.arraycopy(message.getBytes(), 0, msgBytes, lenBytesNumber+2, msgLength);
-        }catch (Exception e){
+            System.arraycopy(message.getBytes(), 0, msgBytes, lenBytesNumber + 2, msgLength);
+        } catch (Exception e) {
             logger.warning("Error while converting message to byte array");
         }
 

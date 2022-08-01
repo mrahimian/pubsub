@@ -1,6 +1,6 @@
-package subscribe;
+package ir.jibit.dumb.subscribe;
 
-public interface CommunicationProtocol {
+public interface SubscriberCommunicationProtocol {
     /**
      * Get data from the resource and deliver to decoder
      * @return

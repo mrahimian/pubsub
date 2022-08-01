@@ -1,6 +1,6 @@
-package publish;
+package ir.jibit.dumb.publish;
 
-import data.Data;
+import ir.jibit.dumb.data.Data;
 
 public class JsonEncoder implements Encoder{
 

@@ -1,6 +1,6 @@
-package publish;
+package ir.jibit.dumb.publish;
 
-public interface CommunicationProtocol {
+public interface PublisherCommunicationProtocol {
     /**
      * Get data from the encoder and write data to the resource
      * @return
