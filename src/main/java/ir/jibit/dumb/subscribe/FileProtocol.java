@@ -1,9 +1,11 @@
 package ir.jibit.dumb.subscribe;
 
-import ir.jibit.dumb.publish.Publisher;
 import ir.jibit.dumb.log.LoggerUtil;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.*;
+import java.security.MessageDigest;
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 public class FileProtocol implements SubscriberCommunicationProtocol {
@@ -13,19 +15,19 @@ public class FileProtocol implements SubscriberCommunicationProtocol {
     private final String cpName;
     private int filePointer;
 
-    public FileProtocol(String fileName, String cpName) throws IOException {
-        logger = LoggerUtil.getLogger(Publisher.class.getName());
+    public FileProtocol(String fileName, String cpName) throws Exception {
+        logger = LoggerUtil.getLogger(FileProtocol.class.getName());
         this.cpName = cpName;
 
         File file = new File(fileName);
-        if(!file.exists()){
+        if (!file.exists()) {
             throw new FileNotFoundException("File " + fileName + " not found");
         }
         fis = new FileInputStream(fileName);
 
         try {
             File storeFile = new File(this.cpName);
-            if (file.createNewFile()) {
+            if (storeFile.createNewFile()) {
                 logger.info("Store file created: " + storeFile.getName());
                 filePointer = 0;
                 new DataOutputStream(new FileOutputStream(this.cpName)).writeInt(filePointer);
@@ -34,42 +36,58 @@ public class FileProtocol implements SubscriberCommunicationProtocol {
                 filePointer = new DataInputStream(new FileInputStream(this.cpName)).readInt();
                 fis.readNBytes(filePointer);
             }
-        } catch (Exception e) {
-            logger.warning("Error while opening or reading store file " + cpName);
+        } catch (IOException e) {
+            String errorMessage = "Error while opening or reading store file " + cpName;
+            logger.warning(errorMessage);
+            throw new IOException(errorMessage);
         }
     }
 
     /**
-     * Get a message from file
-     *
+     * Get one message from file
+     * See writeData() function in publish/FileProtocol to realize the method of storing bytes
+     * @see ir.jibit.dumb.publish.FileProtocol
      * @return message
      */
     @Override
-    synchronized public String readData() {
+    synchronized public String readData() throws Exception {
         String message = null;
         try {
             //first byte is the protocol version
-            int version = fis.readNBytes(1)[0];
+            byte[] firstByte = fis.readNBytes(1);
+            if (firstByte.length == 0) return null;
+            int version = firstByte[0];
 
             int msgLength = 0;
             int lenBytesNumber = 0;
-            if (version == 2) {
+
+            if (version == 2 || version == 3) {
 
                 //second byte is the number of next bytes that shows message length
                 lenBytesNumber = fis.readNBytes(1)[0];
-
                 msgLength = getMessageLength(fis.readNBytes(lenBytesNumber), lenBytesNumber);
+
+                byte[] msgBytes = fis.readNBytes(msgLength);
+                message = new String(msgBytes);
+                filePointer += 1 + 1 + lenBytesNumber + msgLength;
             }
 
-            if (msgLength == 0) return null;
+            if (version == 3) {
 
-            byte[] msgBytes = fis.readNBytes(msgLength);
-            message = new String(msgBytes);
+                byte[] checksum = fis.readNBytes(20);
+                byte[] checksum2 = DigestUtils.sha1(message);
+                if (!Arrays.equals(checksum, checksum2)) {
+                    throw new Exception("Data sent does not match the current data");
+                }
 
-            filePointer += 1 + 1 + lenBytesNumber + msgLength;
+                filePointer += 20;
+
+            }
+
             new DataOutputStream(new FileOutputStream(this.cpName)).writeInt(filePointer);
         } catch (Exception e) {
-            logger.warning("Error while reading data from file");
+            logger.warning("Error while reading data from file:\n" + e.getMessage());
+            throw e;
         }
         return message;
     }

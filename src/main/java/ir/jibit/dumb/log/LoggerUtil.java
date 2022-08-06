@@ -5,17 +5,18 @@ import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 
 public class LoggerUtil {
-    public static Logger getLogger(String className) throws IOException {
+    public static Logger getLogger(String className) {
 
         FileHandler fileHandler ;
+        Logger logger = null;
         try {
             fileHandler = new FileHandler("app.log", true);
-            var logger = Logger.getLogger(className);
+            logger = Logger.getLogger(className);
             logger.addHandler(fileHandler);
 
-            return logger;
         } catch (IOException e) {
-            throw new IOException("Unable to open log file");
+            System.err.println("Unable to open log file");
         }
+        return logger;
     }
 }

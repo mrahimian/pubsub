@@ -3,22 +3,24 @@ package ir.jibit.dumb.publish;
 import ir.jibit.dumb.data.Data;
 
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 
 public class Main {
     private final static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss.SSS");
 
 
-
-    public static void main(String[] args)   {
-        PublisherCommunicationProtocol cp ;
+    public static void main(String[] args) {
+        PublisherCommunicationProtocol cp;
         Publisher publisher;
         try {
             cp = new FileProtocol("sTime.bin");
             Encoder enc = new JsonEncoder();
-            publisher = new Publisher(cp,enc);
-        }catch (IOException e) {
+            publisher = new Publisher(cp, enc);
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
@@ -26,13 +28,13 @@ public class Main {
         try {
 //            publisher.publish( new Data(getTime()) );
 //            while (true){
-            publisher.publish( new Data(getTime()) );
+            publisher.publish(new Data(getTime()));
 //                long beforePublish = System.currentTimeMillis();
 ////                for (int i = 0; i < 100; i++) {
 ////                    publisher.publish( FilePublisher.getTime() );
 ////                }
 //                long afterPublish = System.currentTimeMillis();
-                Thread.sleep(300);
+            Thread.sleep(300);
 ////                System.out.println(afterPublish - beforePublish);
 //            }
         } catch (Exception e) {

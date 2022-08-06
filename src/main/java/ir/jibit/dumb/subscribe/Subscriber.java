@@ -11,7 +11,7 @@ import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 /**
- * A mm.Subscriber subscribes data on external resource such as File, Database, Network ...
+ * A Subscriber subscribes data on external resource such as File, Database, Network ...
  */
 public class Subscriber {
 
@@ -34,7 +34,7 @@ public class Subscriber {
     /**
      * read a message in blocking matter
      */
-    private Optional<Data> _subscribe() {
+    private Optional<Data> _subscribe() throws Exception {
         String msg = cp.readData();
 
         if (msg != null) {
@@ -50,9 +50,8 @@ public class Subscriber {
 
     /**
      * read a message in a blocking matter with respect to the given timeout
-     *
      * @param timeout in milliseconds
-     * @return
+     * @return one data
      */
     public Optional<Data> subscribe(int timeout) {
         final Future<Optional<Data>> future = es.submit(() -> _subscribe());
@@ -72,6 +71,7 @@ public class Subscriber {
 
     /**
      * pass any message to consumer method in an async manner
+     * @param consumer Perform an operation on each Data object
      */
     public void subscribe(Consumer<Data> consumer) {
         try {
@@ -91,7 +91,9 @@ public class Subscriber {
                 }
             });
         } catch (RejectedExecutionException re) {
-            logger.warning("call subscribe after shutdown");
+            String errorMessage = "call subscribe after shutdown";
+            logger.warning(errorMessage);
+            throw new RejectedExecutionException(errorMessage);
         }
     }
 

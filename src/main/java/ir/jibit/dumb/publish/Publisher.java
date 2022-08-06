@@ -24,13 +24,29 @@ public class Publisher {
     /**
      * it writes the data on external resource
      */
-    void publish(Data data) {
+    void publish(Data data) throws Exception {
         try {
             String msg = encoder.encode(data);
             cp.writeData(msg);
-        }catch (Exception e){
-            logger.warning("Error while writing data on file.");
+        } catch (Exception e) {
+            logger.warning("Error while publishing data.");
+            throw e;
         }
-    };
+    }
+
+    /**
+     * Writing will be illegal after calling this function
+     *
+     * @throws IOException
+     */
+    void shutDown() throws IOException {
+        try {
+            cp.shutDown();
+        } catch (IOException e) {
+            String errorMessage = "Error while shutting down publishing";
+            logger.warning(errorMessage);
+            throw new IOException(e);
+        }
+    }
 
 }
